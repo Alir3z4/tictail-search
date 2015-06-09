@@ -2,9 +2,7 @@
 
 from flask import Blueprint, current_app, jsonify
 
-
 api = Blueprint('api', __name__)
-
 
 def data_path(filename):
     data_path = current_app.config['DATA_PATH']
