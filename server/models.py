@@ -1,4 +1,5 @@
 import sys
+from server import exceptions
 
 from server.exceptions import ObjectDoesNotExist
 
@@ -25,6 +26,48 @@ class ModelObjectManager(object):
         """
         return self.model
 
+    def get_model_name(self):
+        """
+        :rtype: str
+        """
+        return self.model.__class__.__name__
+
+    def filter(self, filters):
+        """
+        :type filters: dict
+        :rtype: list of Model
+        """
+        data_list = []
+        raw_data = self.get_raw_data()
+        model = self.get_model()
+        model_name = self.get_model_name()
+        model_data = raw_data[model_name]
+        # Just to get field
+        first_row = model_data[model_data.keys()[0]]
+
+        for field_name in filters:
+            if field_name not in first_row.keys():
+                raise exceptions.FieldDoesNotExist(field_name)
+
+        for id, data in model_data.items():
+            if all([data[k] == v for k, v in filters.items()]):
+                data_list.append(model.__class__(id=id, **data))
+
+        return data_list
+
+    def all(self):
+        """
+        :rtype: list of Model
+        """
+        raw_data = self.get_raw_data()
+        model = self.get_model()
+
+        data_list = []
+        for k, v in raw_data[self.get_model_name()].items():
+            data_list.append(model.__class__(id=k, **v))
+
+        return data_list
+
     def get(self, id):
         """
         Return object by given `id`.
@@ -34,7 +77,7 @@ class ModelObjectManager(object):
         """
         raw_data = self.get_raw_data()
         model = self.get_model()
-        model_name = model.__class__.__name__
+        model_name = self.get_model_name()
         model_raw_data = raw_data[model_name]
 
         if id not in model_raw_data:
@@ -45,14 +88,13 @@ class ModelObjectManager(object):
 
 class Model(object):
     objects = None
-    _fields = []
+    fields = []
 
     def __init__(self, *args, **kwargs):
         self.objects = ModelObjectManager(self)
+        self.fields = kwargs.keys()
 
         for k, v in kwargs.items():
-            self._fields.append(k)
-
             setattr(self, k, v)
 
             if k.endswith('_id'):
@@ -63,15 +105,15 @@ class Model(object):
 
     def get_model_fields(self):
         """
-        :rtype: tuple of str
+        :rtype: list of str
         """
-        return self._fields
+        return self.fields
 
     def get_model_name(self):
         """
         :rtype: str
         """
-        return self.__class__
+        return self.__class__.__name__
 
 
 class Products(Model):
