@@ -4,14 +4,12 @@ import os
 from flask import Flask
 
 from server.api import api
-from server.utils import load_data
 
 
 def create_app(settings_overrides=None):
     app = Flask(__name__)
     configure_settings(app, settings_overrides)
     configure_blueprints(app)
-    load_data()
     return app
 
 
