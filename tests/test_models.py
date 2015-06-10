@@ -5,11 +5,14 @@ from os import listdir
 
 from server import exceptions
 
-from server.models import ModelObjectManager, Tags
+from server.models import ModelObjectManager, Tags, Products
+
 
 class TestModelObjectManager(TestCase):
-    def __init__(self, *args, **kwargs):
-        super(TestModelObjectManager, self).__init__(*args, **kwargs)
+    def test_get_model_name(self):
+        manager = ModelObjectManager(Tags)
+
+        self.assertEqual(manager.get_model_name(), Tags.get_model_name())
 
     def test_get_allowed_lookups(self):
         manager = ModelObjectManager(Tags)
@@ -43,7 +46,6 @@ class TestModelObjectManager(TestCase):
         lookup_type = ModelObjectManager.get_filter_lookup_type(filter_lookup)
 
         self.assertEqual(lookup_type, 'in')
-
 
     def test_get_model(self):
         manager = ModelObjectManager(Tags)
@@ -80,7 +82,7 @@ class TestModelObjectManager(TestCase):
 
     def test_get_all(self):
         manager = ModelObjectManager(Tags)
-        tags = manager.all()
+        tags = manager.all(('tag', ModelObjectManager.SORT_BY_DESCENDING))
 
         self.assertIsNotNone(tags)
         self.assertIsInstance(tags, list)
@@ -104,7 +106,7 @@ class TestModelObjectManager(TestCase):
             manager.filter({'tag__in': 'oik'},
                            ('tagz', ModelObjectManager.SORT_BY_DESCENDING))
 
-        tags = manager.filter({'tag': 'miow'})
+        tags = manager.filter(filters={'tag': 'miow'})
 
         self.assertIsNotNone(tags)
         self.assertIsInstance(tags, list)
@@ -188,3 +190,22 @@ class TestModel(TestCase):
         self.assertIsNotNone(model_name)
         self.assertIsInstance(model_name, str)
         self.assertEqual(model_name, 'Tags')
+
+    def test_to_dict(self):
+        PRODUCT_ID = 'e4ce888809454e80a49adec1de0b35a5'
+        product = Products.objects.get(PRODUCT_ID)
+
+        product_dict = product.to_dict()
+
+        self.assertIsNotNone(product_dict)
+        self.assertIsInstance(product_dict, dict)
+        self.assertIn('shop', product_dict)
+        self.assertIsNotNone(product_dict['shop'])
+        self.assertIsInstance(product_dict['shop'], dict)
+
+    def test_special_getitem(self):
+        TAG_ID = 'b4a59f0e2e1342efa451237125bb331a'
+        tag = Tags.objects.get(TAG_ID)
+
+        self.assertEqual(tag['tag'], tag.tag)
+        self.assertIsNone(tag['miow'])

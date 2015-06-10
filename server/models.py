@@ -47,7 +47,7 @@ class ModelObjectManager(object):
         """
         :rtype: str
         """
-        return self.model.__class__.__name__
+        return self.model.get_model_name()
 
     @staticmethod
     def filter_lookup_in(data, attr, what):
