@@ -15,8 +15,7 @@ before_install:
       - conda update --yes conda
       - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy
 install:
-      - travis_retry pip install -r requirements.txt
-      - travis_retry python setup.py dev
+      - travis_retry pip install -r requirements_dev.txt
 script:
     PYTHONPATH=$PYTHONPATH:. py.test --cov server
 after_success:
