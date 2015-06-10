@@ -11,6 +11,14 @@ class TestModelObjectManager(TestCase):
     def __init__(self, *args, **kwargs):
         super(TestModelObjectManager, self).__init__(*args, **kwargs)
 
+    def test_get_allowed_lookups(self):
+        manager = ModelObjectManager(Tags)
+        allowed_lookup = manager.get_allowed_lookups()
+
+        self.assertEqual(len(allowed_lookup), 2)
+        self.assertIn('in', allowed_lookup)
+        self.assertIn('exact', allowed_lookup)
+
     def test_filter_lookup_in(self):
         attr = 'tag'
         data = {attr: 'men'}
@@ -151,7 +159,6 @@ class TestModelObjectManager(TestCase):
         self.assertEqual(data_sorted[0][sort_by[0]], 23)
         self.assertEqual(data_sorted[1][sort_by[0]], 42)
         self.assertEqual(data_sorted[2][sort_by[0]], 2000)
-
 
 
 class TestModel(TestCase):
