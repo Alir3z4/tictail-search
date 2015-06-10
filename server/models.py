@@ -14,6 +14,18 @@ class ModelObjectManager(object):
         """
         self.model = model
 
+    def get_allowed_lookups(self):
+        """
+        :rtype: dict
+        """
+        if not self.allowed_lookups:
+            self.allowed_lookups = {
+                'in': self.filter_lookup_in,
+                'exact': self.filter_lookup_exact
+            }
+
+        return self.allowed_lookups
+
     def get_raw_data(self):
         """
         :rtype: dict
