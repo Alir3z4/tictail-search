@@ -1,4 +1,9 @@
 (function() {
+    var lastPosition = {
+        lat: 59.3325800,
+        lng: 18.0649000
+    };
+
     var _hueToRgb = function(p, q, t){
         if(t < 0) t += 1;
         if(t > 1) t -= 1;
@@ -157,8 +162,15 @@
         this.prefs = prefs;
 
         this.search = function(cb) {
+            var params = {
+                tags: $('#controls .tags').val().split(','),
+                radius: $('#controls .radius').val(),
+                count: $('#controls .count').val(),
+                lat: lastPosition.lat,
+                lng: lastPosition.lng
+            };
 
-            $.getJSON('http://localhost:5000/search', function(data) {
+            $.getJSON('http://localhost:5000/search', params, function(data) {
                 cb(null, data.products);
             });
         };
@@ -220,7 +232,7 @@
         var prefs = {
             count: 10,
             radius: 500,
-            position: L.latLng(59.3325800, 18.0649000), // Hello Stockholm!
+            position: L.latLng(59.3325800, 18.0649000),
             tags: []
         };
 
@@ -250,6 +262,10 @@
 
         map.on('change:searchpos', function(latlng) {
             searcher.prefs.position = latlng;
+            lastPosition = {
+                lat: latlng.lat,
+                lng: latlng.lng
+            };
         });
     };
 
