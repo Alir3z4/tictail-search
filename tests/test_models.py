@@ -30,6 +30,13 @@ class TestModelObjectManager(TestCase):
             ModelObjectManager.filter_lookup_exact(data, attr, 'women')
         )
 
+    def test_get_filter_lookup_type(self):
+        filter_lookup = 'id__in'
+        lookup_type = ModelObjectManager.get_filter_lookup_type(filter_lookup)
+
+        self.assertEqual(lookup_type, 'in')
+
+
     def test_get_model(self):
         manager = ModelObjectManager(Tags)
         model = manager.get_model()
