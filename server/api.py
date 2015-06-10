@@ -50,8 +50,6 @@ def search():
     else:
         shops = Shops.objects.all()
 
-    print(shops)
-
     search = Search()
     search.set_shops(shops)
 
