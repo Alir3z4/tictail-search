@@ -2,3 +2,7 @@
 omit = ./server/decorators.py
 cover_pylib=False
 source=./server
+
+[report]
+exclude_lines =
+    def __repr__

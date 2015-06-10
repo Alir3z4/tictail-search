@@ -22,7 +22,7 @@ class FieldDoesNotExist(Exception):
         """
         self.field_name = field_name
 
-    def __str__(self):
+    def __repr__(self):
         """
         :rtype: str
         """
