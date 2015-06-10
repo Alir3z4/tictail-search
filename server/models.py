@@ -180,7 +180,10 @@ class ModelObjectManager(object):
         if id not in model_raw_data:
             raise ObjectDoesNotExist()
 
-        return model.__class__(**model_raw_data[id])
+        obj = model_raw_data[id]
+        obj['id'] = id
+
+        return model.__class__(**obj)
 
 
 class Model(object):
