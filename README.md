@@ -1,6 +1,10 @@
 Backend Recruiting Task
 =======================
 
+[![Build Status](https://secure.travis-ci.org/Alir3z4/tictail-search.png)](http://travis-ci.org/Alir3z4/tictail-search)
+[![Coverage Status](https://coveralls.io/repos/Alir3z4/tictail-search/badge.svg)](https://coveralls.io/r/Alir3z4/tictail-search)
+
+
 The story
 ---------
 

@@ -1,17 +1,21 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "pypy"
-  - "3.2"
-  - "3.3"
-  - "3.4"
+    - "2.6"
+    - "2.7"
+    - "pypy"
+    - "3.2"
+    - "3.3"
+    - "3.4"
+virtualenv:
+    system_site_packages: true
+before_install:
+    - sudo apt-get install -qq python-numpy python-scipy
 install:
     - pip install -r requirements_dev.txt
     - pip install coveralls
 before_script:
-  - '[ "${TRAVIS_PYTHON_VERSION}" = "2.6" ] && pip install --use-mirrors unittest2 || /bin/true'
+    - '[ "${TRAVIS_PYTHON_VERSION}" = "2.6" ] && pip install --use-mirrors unittest2 || /bin/true'
 script:
-  PYTHONPATH=$PYTHONPATH:. py.test --cov server
+    PYTHONPATH=$PYTHONPATH:. py.test --cov server
 after_success:
     coveralls
