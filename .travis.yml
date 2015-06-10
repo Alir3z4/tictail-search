@@ -6,13 +6,16 @@ python:
     - "3.2"
     - "3.3"
     - "3.4"
-virtualenv:
-    system_site_packages: true
 before_install:
     - sudo apt-get install -qq python-numpy python-scipy
 install:
+    - sudo pip install conda
+    - sudo conda init
+    - sudo conda update conda --yes
+    - deps='pip numpy==1.9.2 scipy==0.15.1 coveralls'
+    - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
+    - export PATH=$HOME/py/bin:$PATH
     - pip install -r requirements_dev.txt
-    - pip install coveralls
 before_script:
     - '[ "${TRAVIS_PYTHON_VERSION}" = "2.6" ] && pip install --use-mirrors unittest2 || /bin/true'
 script:
