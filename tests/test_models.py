@@ -11,6 +11,25 @@ class TestModelObjectManager(TestCase):
     def __init__(self, *args, **kwargs):
         super(TestModelObjectManager, self).__init__(*args, **kwargs)
 
+    def test_filter_lookup_in(self):
+        attr = 'tag'
+        data = {attr: 'men'}
+        tags = ['no', 'country', 'for', 'old', 'men']
+
+        self.assertTrue(ModelObjectManager.filter_lookup_in(data, attr, tags))
+        self.assertFalse(ModelObjectManager.filter_lookup_in(data, attr, []))
+
+    def test_filter_lookup_exact(self):
+        attr = 'tag'
+        data = {attr: 'men'}
+
+        self.assertTrue(
+            ModelObjectManager.filter_lookup_exact(data, attr, 'men')
+        )
+        self.assertFalse(
+            ModelObjectManager.filter_lookup_exact(data, attr, 'women')
+        )
+
     def test_get_model(self):
         manager = ModelObjectManager(Tags)
         model = manager.get_model()
@@ -74,6 +93,51 @@ class TestModelObjectManager(TestCase):
         self.assertIsNotNone(tags)
         self.assertIsInstance(tags, list)
         self.assertEquals(len(tags), 1)
+
+        tag_list = ['trousers', 'plates']
+        tags = manager.filter({'tag__in': tag_list})
+
+        self.assertIsNotNone(tags)
+        self.assertIsInstance(tags, list)
+        self.assertEquals(len(tags), 2)
+
+        tag_list = ['no', 'country', 'for', 'old', 'guys']
+        tags = manager.filter({'tag__in': tag_list})
+
+        self.assertIsNotNone(tags)
+        self.assertIsInstance(tags, list)
+        self.assertEquals(len(tags), 0)
+
+    def test_sort_by(self):
+        data_list = [
+            {
+                'name': 'me',
+                'age': 42
+            },
+            {
+                'name': 'you',
+                'age': 23
+            },
+            {
+                'name': 'wine',
+                'age': 2000
+            }
+        ]
+        sort_by = ('age', ModelObjectManager.SORT_BY_DESCENDING)
+        data_sorted = ModelObjectManager.sort_by(data_list, sort_by)
+
+        self.assertIsNotNone(data_sorted)
+        self.assertEqual(data_sorted[0][sort_by[0]], 2000)
+        self.assertEqual(data_sorted[1][sort_by[0]], 42)
+        self.assertEqual(data_sorted[2][sort_by[0]], 23)
+
+        sort_by = ('age', ModelObjectManager.SORT_BY_ASCENDING)
+        data_sorted = ModelObjectManager.sort_by(data_sorted, sort_by)
+
+        self.assertEqual(data_sorted[0][sort_by[0]], 23)
+        self.assertEqual(data_sorted[1][sort_by[0]], 42)
+        self.assertEqual(data_sorted[2][sort_by[0]], 2000)
+
 
 
 class TestModel(TestCase):
