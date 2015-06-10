@@ -8,7 +8,12 @@ from server.app import create_app
 
 class TestAPI(TestCase):
     def create_app(self):
-        return create_app({'settings_override': True})
+        return create_app(
+            settings_overrides={
+                'TESTING': True,
+                'PRESERVE_CONTEXT_ON_EXCEPTION': False
+            }
+        )
 
     def test_search(self):
         tags = ['men', 'women']
