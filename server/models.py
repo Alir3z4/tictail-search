@@ -1,4 +1,5 @@
 import sys
+import operator
 from server import exceptions
 
 from server.exceptions import ObjectDoesNotExist
@@ -6,7 +7,11 @@ from server.exceptions import ObjectDoesNotExist
 
 class ModelObjectManager(object):
     model = None
+    allowed_lookups = None
     raw_data = {}
+
+    SORT_BY_ASCENDING = 1
+    SORT_BY_DESCENDING = 2
 
     def __init__(self, model):
         """
@@ -63,8 +68,34 @@ class ModelObjectManager(object):
         :type lookup: dict
         """
         return data[attr] == what
+
+    def get_filter_lookup_type(self, lookup_filter):
+        """
+        :type lookup_filter: str
+
+        :rtype: str
+        """
+        return lookup_filter.split('__')[1]
+
+    @staticmethod
+    def sort_by(data_list, sort_by):
+        """
+        :type data_list: list of Model
+        :type field_name: str
+
+        :returns: Return list of Models sorted by `field_name`
+        :rtype: list of Model
+        """
+        return sorted(
+            data_list,
+            key=operator.itemgetter(sort_by[0]),
+            reverse=sort_by[1] == ModelObjectManager.SORT_BY_DESCENDING
+        )
+
+    def filter(self, filters, sort_by=None):
         """
         :type filters: dict
+        :type sort_by: tuple of str
         :rtype: list of Model
         """
         data_list = []
@@ -72,21 +103,50 @@ class ModelObjectManager(object):
         model = self.get_model()
         model_name = self.get_model_name()
         model_data = raw_data[model_name]
-        # Just to get field
-        first_row = model_data[model_data.keys()[0]]
+        allowed_lookups = self.get_allowed_lookups()
+        # Just to get field names
+        first_id = model_data.keys()[0]
+        first_row = model_data[first_id]
+        first_row['id'] = first_id
 
-        for field_name in filters:
-            if field_name not in first_row.keys():
-                raise exceptions.FieldDoesNotExist(field_name)
+        for fn in filters:
+            fn_key = fn.split('__')[0]
+            if fn_key not in first_row.keys():
+                raise exceptions.FieldDoesNotExist(fn_key)
+
+            if sort_by and sort_by[0] not in first_row.keys():
+                raise Exception()
+
+            if not fn.endswith('__'):
+                filters['{0}__exact'.format(fn)] = filters.pop(fn)
 
         for id, data in model_data.items():
-            if all([data[k] == v for k, v in filters.items()]):
-                data_list.append(model.__class__(id=id, **data))
+            data['id'] = id
+            row_matches = True
+
+            for k, v in filters.items():
+                lookup_type = self.get_filter_lookup_type(k)
+                attr = k.split('__')[0]
+
+                if lookup_type not in allowed_lookups:
+                    raise Exception()
+
+                filter_lookup = allowed_lookups[lookup_type]
+
+                if not filter_lookup(data, attr, v):
+                    row_matches = False
+
+            if row_matches:
+                data_list.append(model.__class__(**data))
+
+        if sort_by:
+            data_list = self.sort_by(data_list, sort_by)
 
         return data_list
 
-    def all(self):
+    def all(self, sort_by=None):
         """
+        :type sort_by: tuple of str
         :rtype: list of Model
         """
         raw_data = self.get_raw_data()
@@ -94,7 +154,14 @@ class ModelObjectManager(object):
 
         data_list = []
         for k, v in raw_data[self.get_model_name()].items():
-            data_list.append(model.__class__(id=k, **v))
+            v['id'] = k
+            data_list.append(model.__class__(**v))
+
+        if sort_by and sort_by[0] not in data_list[0].get_model_fields():
+            raise exceptions.FieldDoesNotExist(sort_by[0])
+
+        if sort_by:
+            data_list = self.sort_by(data_list, sort_by)
 
         return data_list
 
@@ -113,7 +180,7 @@ class ModelObjectManager(object):
         if id not in model_raw_data:
             raise ObjectDoesNotExist()
 
-        return model.__class__(id=id, **model_raw_data[id])
+        return model.__class__(**model_raw_data[id])
 
 
 class Model(object):
@@ -144,6 +211,25 @@ class Model(object):
         :rtype: str
         """
         return self.__class__.__name__
+
+    def to_dict(self):
+        """
+        :rtype: dict
+        """
+        dictator = {}
+        for f in self.get_model_fields():
+            dictator[f] = getattr(self, f)
+            if f.endswith('_id'):
+                f = f.replace('_id', '')
+                dictator[f] = getattr(self, f).to_dict()
+
+        return dictator
+
+    def __getitem__(self, item):
+        if item in self.get_model_fields():
+            return getattr(self, item)
+
+        return None
 
 
 class Products(Model):
