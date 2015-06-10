@@ -128,10 +128,10 @@ class Model(object):
             setattr(self, k, v)
 
             if k.endswith('_id'):
-                model_name = k.replace('_id', '')
-                model = getattr(sys.modules[__name__],
-                                '{0}s'.format(model_name.capitalize()))
-                setattr(self, model_name, model.objects.get(id=v))
+                re_model_name = k.replace('_id', '')
+                rel_model_class = getattr(sys.modules[__name__],
+                                '{0}s'.format(re_model_name.capitalize()))
+                setattr(self, re_model_name, rel_model_class.objects.get(id=v))
 
     def get_model_fields(self):
         """
