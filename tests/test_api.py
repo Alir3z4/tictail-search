@@ -1,7 +1,5 @@
-import json
-import urllib
-
 from flask.ext.testing import TestCase
+from urllib import urlencode
 
 from server.app import create_app
 
@@ -27,9 +25,8 @@ class TestAPI(TestCase):
             'lng': float(18.0649)
 
         }
-        params = urllib.urlencode(params, True)
 
-        resp = self.client.get("/search?{0}".format(params))
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
 
         self.assertIsNotNone(resp.json)
         self.assertIn('products', resp.json)
@@ -48,3 +45,65 @@ class TestAPI(TestCase):
             products[0]['popularity'],
             products[-1]['popularity']
         )
+
+        # If tags is not passed into request, still should get results
+        params = {
+            'tags[]': '',
+            'radius': radius,
+            'count': count,
+            'lat': float(59.33258),
+            'lng': float(18.0649)
+
+        }
+
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
+
+        self.assertIsNotNone(resp.json)
+        self.assertIn('products', resp.json)
+
+        products = resp.json['products']
+
+        self.assertIsNotNone(products)
+        self.assertIsInstance(products, list)
+
+        # No param should result in 400
+        resp = self.client.get("/search")
+        self.assertEqual(resp.status_code, 400)
+
+        # Broken params should results in 400
+        params = {
+            'tags[]': tags,
+            'radius': radius,
+            'count': count,
+            'lat': '59x',
+            'lng': float(18.0649)
+        }
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
+        self.assertEqual(resp.status_code, 400)
+
+        # lat and lng are required params, if it's not passed
+        # should result in 400
+        params = {
+            'tags[]': tags,
+            'radius': radius,
+            'count': count,
+            'lat': '',
+            'lng': ''
+        }
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
+        self.assertEqual(resp.status_code, 400)
+
+        # Count should be passed as integer or be able to be casted
+        # into integer, otherwise should result in 404
+        params = {
+            'tags[]': tags,
+            'radius': radius,
+            'count': '',
+            'lat': float(59.33258),
+            'lng': float(18.0649)
+
+        }
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
+        self.assertEqual(resp.status_code, 404)
+
+

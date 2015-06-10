@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, jsonify, request
 import flask
 
 from server.decorators import crossdomain
@@ -9,10 +9,6 @@ from server.models import Products, ModelObjectManager, Tags, Taggings, Shops
 from server.search import Search
 
 api = Blueprint('api', __name__)
-
-def data_path(filename):
-    data_path = current_app.config['DATA_PATH']
-    return u"%s/%s" % (data_path, filename)
 
 
 @api.route('/search', methods=['GET'])
@@ -38,6 +34,14 @@ def search():
         logging.error('Error in casting position')
         flask.abort(400)
 
+    if limit and limit not in ['', None]:
+        try:
+            limit = int(limit)
+        except ValueError:
+            flask.abort(404)
+    else:
+        flask.abort(404)
+
     taggings = []
     if tags and tags not in ['', None, []] and isinstance(tags, list):
         tags = Tags.objects.filter({'tag__in': tags})
@@ -58,17 +62,12 @@ def search():
     shops = search.get_nearby_shops()
 
     for shop in shops:
+        if len(product_list) >= limit:
+            break
+
         product_list += Products.objects.filter(
             {'shop_id': shop.id},
             ('popularity', ModelObjectManager.SORT_BY_DESCENDING)
         )
-
-    if limit and limit not in ['', None]:
-        try:
-            limit = int(limit)
-        except ValueError:
-            flask.abort(400)
-    else:
-        limit = len(product_list)
 
     return jsonify({'products': [i.to_dict() for i in product_list[0:limit]]})
