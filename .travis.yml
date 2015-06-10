@@ -1,22 +1,28 @@
 language: python
 python:
-    - "2.6"
     - "2.7"
     - "pypy"
     - "3.2"
     - "3.3"
     - "3.4"
+before_install:
+      - sudo apt-get update -qq
+      - sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran
+      - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+      - chmod +x miniconda.sh
+      - ./miniconda.sh -b
+      - export PATH=/home/travis/miniconda/bin:$PATH
+      - conda update --yes conda
+      - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy
 install:
-    - sudo pip install conda
-    - sudo conda init
-    - sudo conda update conda --yes
-    - deps='pip numpy scipy coveralls'
-    - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
-    - export PATH=$HOME/py/bin:$PATH
-    - pip install -r requirements_dev.txt
-before_script:
-    - '[ "${TRAVIS_PYTHON_VERSION}" = "2.6" ] && pip install --use-mirrors unittest2 || /bin/true'
+      - travis_retry pip install -r requirements.txt
+      - travis_retry python setup.py dev
 script:
     PYTHONPATH=$PYTHONPATH:. py.test --cov server
 after_success:
     coveralls
+
+cache:
+    - apt
+    - directories:
+        - $HOME/.cache/pip
