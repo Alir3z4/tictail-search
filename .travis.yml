@@ -9,9 +9,10 @@ before_install:
       - ./miniconda.sh -b
       - export PATH=/home/travis/miniconda/bin:$PATH
       - conda update --yes conda
-      - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy==1.9.2 scipy==0.15.1 coveralls
+      - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy==1.9.2 scipy==0.15.1
 install:
       - travis_retry pip install -r requirements_dev.txt
+      - travis_retry pip install coveralls
 script:
     - PYTHONPATH=$PYTHONPATH:. coverage run --source server --rcfile=.coveragerc -m unittest discover tests
     - coverage combine
