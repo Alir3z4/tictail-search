@@ -44,7 +44,16 @@ class ModelObjectManager(object):
         """
         return self.model.__class__.__name__
 
-    def filter(self, filters):
+    @staticmethod
+    def filter_lookup_in(data, attr, what):
+        """
+        :type data: dict
+        :type attr: str
+        :type what: list
+
+        :rtype: bool
+        """
+        return data[attr] in what
         """
         :type filters: dict
         :rtype: list of Model
