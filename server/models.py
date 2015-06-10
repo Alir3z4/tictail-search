@@ -69,7 +69,8 @@ class ModelObjectManager(object):
         """
         return data[attr] == what
 
-    def get_filter_lookup_type(self, lookup_filter):
+    @staticmethod
+    def get_filter_lookup_type(lookup_filter):
         """
         :type lookup_filter: str
 
