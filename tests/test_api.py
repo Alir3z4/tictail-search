@@ -106,4 +106,17 @@ class TestAPI(TestCase):
         resp = self.client.get("/search?{0}".format(urlencode(params, True)))
         self.assertEqual(resp.status_code, 404)
 
+        # Passing count as something that can't be casted into integer
+        # should result in 404
+        params = {
+            'tags[]': tags,
+            'radius': radius,
+            'count': 'k',
+            'lat': float(59.33258),
+            'lng': float(18.0649)
+
+        }
+        resp = self.client.get("/search?{0}".format(urlencode(params, True)))
+        self.assertEqual(resp.status_code, 404)
+
 
