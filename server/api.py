@@ -3,6 +3,7 @@ import logging
 
 from flask import Blueprint, current_app, jsonify, request
 import flask
+
 from server.decorators import crossdomain
 from server.models import Products, ModelObjectManager, Tags, Taggings, Shops
 from server.search import Search
@@ -43,7 +44,6 @@ def search():
         tag_ids = [i.id for i in tags]
         if tag_ids:
             taggings = Taggings.objects.filter({'tag_id__in': tag_ids})
-
 
     if taggings:
         shops = Shops.objects.filter({'id__in': [i.shop_id for i in taggings]})

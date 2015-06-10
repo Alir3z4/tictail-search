@@ -1,7 +1,7 @@
 import sys
 import operator
-from server import exceptions
 
+from server import exceptions
 from server.exceptions import ObjectDoesNotExist
 
 

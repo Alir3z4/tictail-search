@@ -3,7 +3,6 @@ from scipy import spatial
 
 
 class Search(object):
-    shop_indexed = False
     shops = []
     shops_index = {}
     locations = [(), ]
