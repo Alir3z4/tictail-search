@@ -13,10 +13,11 @@ before_install:
 install:
       - travis_retry pip install -r requirements_dev.txt
 script:
-    PYTHONPATH=$PYTHONPATH:. py.test --cov server
+    - PYTHONPATH=$PYTHONPATH:. coverage run --source server --rcfile=.coveragerc -m unittest discover tests
+    - coverage combine
+    - coverage report
 after_success:
-    coveralls
-
+    coveralls --rcfile=.coveragerc
 cache:
     - apt
     - directories:
