@@ -1,8 +1,19 @@
 class ObjectDoesNotExist(Exception):
+    """
+    ObjectDoesNotExist
+
+    Should be raised when looked up object does not exist.
+    """
     pass
 
 
 class FieldDoesNotExist(Exception):
+    """
+    FieldDoesNotExist
+
+    Should be raised when an filed is being passed object which doesn't
+    exists on the `server.models.Model`
+    """
     field_name = None
 
     def __init__(self, field_name):
@@ -15,7 +26,10 @@ class FieldDoesNotExist(Exception):
         """
         :rtype: str
         """
-        return self.field_nameclass LookupIsNotAllowed(FieldDoesNotExist):
+        return self.field_name
+
+
+class LookupIsNotAllowed(FieldDoesNotExist):
     """
     LookupIsNotAllowed
 
