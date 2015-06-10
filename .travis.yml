@@ -1,10 +1,6 @@
 language: python
 python:
     - "2.7"
-    - "pypy"
-    - "3.2"
-    - "3.3"
-    - "3.4"
 before_install:
       - sudo apt-get update -qq
       - sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran
