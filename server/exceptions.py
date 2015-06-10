@@ -15,4 +15,10 @@ class FieldDoesNotExist(Exception):
         """
         :rtype: str
         """
-        return self.field_name
+        return self.field_nameclass LookupIsNotAllowed(FieldDoesNotExist):
+    """
+    LookupIsNotAllowed
+
+    Should be raised when an invalid lookup is being used on filtering.
+    """
+    pass

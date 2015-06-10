@@ -129,7 +129,7 @@ class ModelObjectManager(object):
                 attr = k.split('__')[0]
 
                 if lookup_type not in allowed_lookups:
-                    raise Exception()
+                    raise exceptions.LookupIsNotAllowed(lookup_type)
 
                 filter_lookup = allowed_lookups[lookup_type]
 
