@@ -54,6 +54,15 @@ class ModelObjectManager(object):
         :rtype: bool
         """
         return data[attr] in what
+
+    @staticmethod
+    def filter_lookup_exact(data, attr, what):
+        """
+        :type data: dict
+        :type attr: str
+        :type lookup: dict
+        """
+        return data[attr] == what
         """
         :type filters: dict
         :rtype: list of Model
