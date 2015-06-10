@@ -82,6 +82,13 @@ class TestModelObjectManager(TestCase):
         with self.assertRaises(exceptions.FieldDoesNotExist):
             manager.filter({'cat': 'miow'})
 
+        with self.assertRaises(exceptions.LookupIsNotAllowed):
+            manager.filter({'tag__miow': 'oik'})
+
+        with self.assertRaises(exceptions.InvalidSortKey):
+            manager.filter({'tag__in': 'oik'},
+                           ('tagz', ModelObjectManager.SORT_BY_DESCENDING))
+
         tags = manager.filter({'tag': 'miow'})
 
         self.assertIsNotNone(tags)

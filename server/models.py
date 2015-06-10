@@ -115,7 +115,7 @@ class ModelObjectManager(object):
                 raise exceptions.FieldDoesNotExist(fn_key)
 
             if sort_by and sort_by[0] not in first_row.keys():
-                raise Exception()
+                raise exceptions.InvalidSortKey(sort_by[0])
 
             if not fn.endswith('__'):
                 filters['{0}__exact'.format(fn)] = filters.pop(fn)

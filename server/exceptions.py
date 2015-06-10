@@ -36,3 +36,13 @@ class LookupIsNotAllowed(FieldDoesNotExist):
     Should be raised when an invalid lookup is being used on filtering.
     """
     pass
+
+
+class InvalidSortKey(FieldDoesNotExist):
+    """
+    LookupIsNotAllowed
+
+    Should be raised when the sort key is invalid and doesn't exists on model.
+    A sort key is obviously a field on the `server.models.Model`.
+    """
+    pass
