@@ -268,7 +268,7 @@ class Model(object):
         if item in self.get_model_fields():
             return getattr(self, item)
 
-        return None
+        raise exceptions.FieldDoesNotExist(item)
 
 
 class Products(Model):

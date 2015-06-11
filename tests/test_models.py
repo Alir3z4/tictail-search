@@ -211,4 +211,6 @@ class TestModel(TestCase):
         tag = Tags.objects.get(TAG_ID)
 
         self.assertEqual(tag['tag'], tag.tag)
-        self.assertIsNone(tag['miow'])
+
+        with self.assertRaises(exceptions.FieldDoesNotExist):
+            self.assertIsNone(tag['miow'])
