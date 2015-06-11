@@ -69,6 +69,14 @@ which doesn't exists on the `server.models.Model`
 * `InvalidSortKey`: Should be raised when the sort key is invalid and doesn't exists on model.
 A sort key is obviously a field on the `server.models.Model`.
 
+
+### MVC
+
+The logic or controller has been tried to be kept in `server.api` as much as 
+possible where dealing with data and models are in `server.models` and
+`server.search`. As for the view `client/index.html` can be considered as 
+such.
+
 ### Object Oriented Programming & Polymorphism
 
 In the making the project following best practising of Object Oriented 
