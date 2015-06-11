@@ -47,7 +47,7 @@ def load_data():
     setattr(models.ModelObjectManager, 'raw_data', raw_data)
 
 
-def get_cash(key, timeout=60*60*24, new_value=None, default_value=None):
+def get_cash(key, timeout=60*5, new_value=None, default_value=None):
     """
     A simple cache utility method to get cached value based on the provided key.
     If the the returning value is `None` it will be generated and cached.
