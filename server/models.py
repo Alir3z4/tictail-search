@@ -159,7 +159,7 @@ class ModelObjectManager(object):
             data_list.append(model.__class__(**v))
 
         if sort_by and sort_by[0] not in data_list[0].get_model_fields():
-            raise exceptions.FieldDoesNotExist(sort_by[0])
+            raise exceptions.InvalidSortKey(sort_by[0])
 
         if sort_by:
             data_list = self.sort_by(data_list, sort_by)
