@@ -193,7 +193,7 @@ class ModelObjectManager(object):
             v['id'] = pk
             data_list.append(model.__class__(**v))
 
-        if sort_by and sort_by[0] not in data_list[0].get_model_fields():
+        if sort_by and sort_by[0] not in data_list[0].get_model_field_names():
             raise exceptions.InvalidSortKey(sort_by[0])
 
         if sort_by:
@@ -253,7 +253,7 @@ class Model(object):
                                           '{0}s'.format(re_model_name.capitalize()))
                 setattr(self, re_model_name, rel_model_class.objects.get(pk=v))
 
-    def get_model_fields(self):
+    def get_model_field_names(self):
         """
         :rtype: list of str
         """
@@ -270,11 +270,11 @@ class Model(object):
         :rtype: dict
         """
         dictator = {}
-        for f in self.get_model_fields():
-            dictator[f] = getattr(self, f)
-            if f.endswith('_id'):
-                f = f.replace('_id', '')
-                dictator[f] = getattr(self, f).to_dict()
+        for field_name in self.get_model_field_names():
+            dictator[field_name] = getattr(self, field_name)
+            if field_name.endswith('_id'):
+                field_name = field_name.replace('_id', '')
+                dictator[field_name] = getattr(self, field_name).to_dict()
 
         return dictator
 
@@ -285,7 +285,7 @@ class Model(object):
             on the model.
         :rtype str
         """
-        if item in self.get_model_fields():
+        if item in self.get_model_field_names():
             return getattr(self, item)
 
         raise exceptions.FieldDoesNotExist(item)

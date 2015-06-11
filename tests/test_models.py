@@ -167,10 +167,10 @@ class TestModelObjectManager(TestCase):
 
 
 class TestModel(TestCase):
-    def test_get_model_fields(self):
+    def test_get_model_field_names(self):
         TAG_ID = 'b4a59f0e2e1342efa451237125bb331a'
         tag = Tags.objects.get(TAG_ID)
-        model_fields = tag.get_model_fields()
+        model_fields = tag.get_model_field_names()
 
         self.assertEquals(len(model_fields), 2)
         self.assertIn('id', model_fields)
