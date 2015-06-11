@@ -9,7 +9,7 @@ from server.search import Search
 class TestSearch(TestCase):
     def test_get_locations(self):
         search = Search()
-        search.set_shops(Shops.objects.all())
+        search.set_shops(Shops().objects.all())
         locations = search.get_locations()
 
         self.assertIsNotNone(locations)
@@ -17,7 +17,7 @@ class TestSearch(TestCase):
 
     def test_get_ckdtree(self):
         search = Search()
-        shops = Shops.objects.all()
+        shops = Shops().objects.all()
         search.set_shops(shops)
         ckdtree = search.get_ckdtree()
 
@@ -26,7 +26,7 @@ class TestSearch(TestCase):
 
     def test_get_last_points(self):
         search = Search()
-        shops = Shops.objects.all()
+        shops = Shops().objects.all()
         search.set_shops(shops)
         MAX_LOCATIONS = 250
 
@@ -44,7 +44,7 @@ class TestSearch(TestCase):
 
     def test_get_nearby_shops(self):
         search = Search()
-        shops = Shops.objects.all()
+        shops = Shops().objects.all()
         search.set_shops(shops)
 
         MAX_LOCATIONS = 250

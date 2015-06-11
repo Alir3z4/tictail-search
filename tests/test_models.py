@@ -9,9 +9,9 @@ from server.models import ModelObjectManager, Tags, Products
 
 class TestModelObjectManager(TestCase):
     def test_get_model_name(self):
-        manager = ModelObjectManager(Tags)
+        manager = ModelObjectManager(Tags())
 
-        self.assertEqual(manager.get_model_name(), Tags.get_model_name())
+        self.assertEqual(manager.get_model_name(), Tags().get_model_name())
 
     def test_get_allowed_lookups(self):
         manager = ModelObjectManager(Tags)
@@ -51,10 +51,10 @@ class TestModelObjectManager(TestCase):
         model = manager.get_model()
 
         self.assertIsNotNone(model)
-        self.assertIsInstance(model, Tags.__class__)
+        self.assertIsInstance(model(), Tags)
 
     def test_get(self):
-        manager = ModelObjectManager(Tags)
+        manager = ModelObjectManager(Tags())
 
         with self.assertRaises(exceptions.ObjectDoesNotExist):
             manager.get('jojo was a man who thought he was a loner')
@@ -63,7 +63,7 @@ class TestModelObjectManager(TestCase):
         obj = manager.get(TAG_ID)
 
         self.assertIsNotNone(obj)
-        self.assertIsInstance(obj, Tags.__class__)
+        self.assertIsInstance(obj, Tags().__class__)
         self.assertIsNotNone(obj.id)
         self.assertEqual(obj.id, TAG_ID)
 
@@ -80,7 +80,7 @@ class TestModelObjectManager(TestCase):
         self.assertEqual(len(raw_data), len(data_files))
 
     def test_get_all(self):
-        manager = ModelObjectManager(Tags)
+        manager = ModelObjectManager(Tags())
         tags = manager.all(('tag', ModelObjectManager.SORT_BY_DESCENDING))
 
         with self.assertRaises(exceptions.InvalidSortKey):
@@ -97,7 +97,7 @@ class TestModelObjectManager(TestCase):
             self.assertIsInstance(tag.tag, str)
 
     def test_filter(self):
-        manager = ModelObjectManager(Tags)
+        manager = ModelObjectManager(Tags())
         with self.assertRaises(exceptions.FieldDoesNotExist):
             manager.filter({'cat': 'miow'})
 
@@ -168,7 +168,7 @@ class TestModelObjectManager(TestCase):
 class TestModel(TestCase):
     def test_get_model_field_names(self):
         TAG_ID = 'b4a59f0e2e1342efa451237125bb331a'
-        tag = Tags.objects.get(TAG_ID)
+        tag = Tags().objects.get(TAG_ID)
         model_fields = tag.get_model_field_names()
 
         self.assertEquals(len(model_fields), 2)
@@ -187,7 +187,7 @@ class TestModel(TestCase):
         #  It's because we're living a world of paranoia?
         #  No, model api might change in future and having the unit-test
         #  of that feature will insist of compatibility even in future
-        model_name = Tags.get_model_name()
+        model_name = Tags().get_model_name()
 
         self.assertIsNotNone(model_name)
         self.assertIsInstance(model_name, str)
@@ -195,7 +195,7 @@ class TestModel(TestCase):
 
     def test_to_dict(self):
         PRODUCT_ID = 'e4ce888809454e80a49adec1de0b35a5'
-        product = Products.objects.get(PRODUCT_ID)
+        product = Products().objects.get(PRODUCT_ID)
 
         product_dict = product.to_dict()
 
@@ -207,7 +207,7 @@ class TestModel(TestCase):
 
     def test_special_getitem(self):
         TAG_ID = 'b4a59f0e2e1342efa451237125bb331a'
-        tag = Tags.objects.get(TAG_ID)
+        tag = Tags().objects.get(TAG_ID)
 
         self.assertEqual(tag['tag'], tag.tag)
 

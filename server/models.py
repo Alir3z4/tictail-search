@@ -77,7 +77,7 @@ class ModelObjectManager(object):
         """
         :rtype: str
         """
-        return self.model.get_model_name()
+        return self.model.__class__.__name__
 
     @staticmethod
     def filter_lookup_in(data, attr, what):
@@ -251,7 +251,7 @@ class Model(object):
                 re_model_name = k.replace('_id', '')
                 rel_model_class = getattr(sys.modules[__name__],
                                           '{0}s'.format(re_model_name.capitalize()))
-                setattr(self, re_model_name, rel_model_class.objects.get(pk=v))
+                setattr(self, re_model_name, rel_model_class().objects.get(pk=v))
 
     def get_model_field_names(self):
         """
@@ -307,7 +307,3 @@ class Taggings(Model):
     pass
 
 
-Products = Products()
-Shops = Shops()
-Tags = Tags()
-Taggings = Taggings()
