@@ -92,6 +92,6 @@ def search():
         )
 
     result = {'products': [i.to_dict() for i in product_list[0:limit]]}
-    cache.set(ckey, result, timeout= 3*60)
+    cache.set(ckey, result, timeout=5 * 60)
 
     return jsonify(result)
