@@ -6,6 +6,38 @@ from server.exceptions import ObjectDoesNotExist
 
 
 class ModelObjectManager(object):
+    """
+    ModelObjectManager
+
+    Model Object Manager is the way for getting data from.
+
+    Each ``Model`` will be using manager for dealing with:
+
+    * Retrieving
+    * Filtering
+    * Sorting
+
+    ``ModelObjectManager`` is set on ``Model`` class which will be inherited
+    by other models. All the models then would have access to
+    ``ModelObjectManager`` via ``objects`` attributes.
+
+    Attributes:
+    ===========
+
+    * ``model``: The current ``Model`` that is using the model. All the
+        actions on the manager will use the model name to deal with the data
+        that are being kept in ``raw_data``.
+    * ``allowed_lookups``: Allowed lookups includes ``in`` and ``exact`` which
+        can be used in filters like: ``<field_name>__<lookup_type>``.
+        * Lookup ``in`` is useful for passing a list or tuple into filter.
+        * Lookup `exact` won't be used directly, is for internal usage of
+        ``ModelObjectManager`` itself.
+    * ``raw_data`` Hold the whole data in, it acts as the database in memory.
+        Each set of data is kept with their unique ``id``.
+    * ``SORT_BY_ASCENDING`` Define ascending.
+    * ``SORT_BY_DESCENDING`` Define defending.
+
+    """
     model = None
     allowed_lookups = None
     raw_data = {}
