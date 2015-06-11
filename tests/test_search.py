@@ -1,5 +1,7 @@
 from unittest import TestCase
+
 import scipy
+
 from server.models import Shops
 from server.search import Search
 

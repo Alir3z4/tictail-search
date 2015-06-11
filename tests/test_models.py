@@ -4,7 +4,6 @@ from os.path import join, isfile
 from os import listdir
 
 from server import exceptions
-
 from server.models import ModelObjectManager, Tags, Products
 
 

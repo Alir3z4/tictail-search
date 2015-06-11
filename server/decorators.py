@@ -6,8 +6,9 @@ Decorator for the HTTP Access Control
 Source: http://flask.pocoo.org/snippets/56/
 """
 from datetime import timedelta
-from flask import make_response, request, current_app
 from functools import update_wrapper
+
+from flask import make_response, request, current_app
 
 
 def crossdomain(origin=None, methods=None, headers=None,

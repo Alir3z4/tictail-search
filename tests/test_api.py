@@ -1,5 +1,6 @@
-from flask.ext.testing import TestCase
 from urllib import urlencode
+
+from flask.ext.testing import TestCase
 
 from server.app import create_app
 
