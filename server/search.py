@@ -3,6 +3,31 @@ from scipy import spatial
 
 
 class Search(object):
+    """
+    Search
+
+    Querying ``scipy.spatial.cKDTree`` for neighbor locations/shops.
+
+    The fastest way to do a proximity search lookup in Python that I could
+    find was SciPy's implementation of a k-d tree.
+
+    In short, a k-d tree is a binary space partitioning tree, and SciPy's C
+    implementation is pretty fast. Here are the docs for the code we'll use.
+
+    Ref: http://goo.gl/5XWgBI
+
+
+    Attributes:
+    ==========
+
+    * ``shops``: A list of shops to query them for getting neighbors.
+    * ``shop_index``: A hash/dictionary table of shops with their key
+        index as tuple of locations points, the purpose is for faster lookup.
+    *``ckdtree``: A ``scipy.spatial.cKDTree`` that makes the queering for
+        neighbor easy.
+    * ``last_points`` After querying the ``ckdtree``, the nearest points
+        will be kept on this attribute.
+    """
     shops = []
     shops_index = {}
     locations = [(), ]
@@ -51,7 +76,7 @@ class Search(object):
 
     def get_nearby_shops(self):
         """
-        :type list of Shops
+        :rtype list of Shops
         """
         points = self.get_last_points()
         shops = []
