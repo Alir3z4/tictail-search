@@ -58,7 +58,7 @@ def search():
     search.set_shops(shops)
 
     product_list = []
-    search.query(lat, lng, radius, int(limit)/10)
+    search.query(lat, lng, radius, 50)
     shops = search.get_nearby_shops()
 
     for shop in shops:
