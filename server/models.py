@@ -2,7 +2,6 @@ import sys
 import operator
 
 from server import exceptions
-from server.exceptions import ObjectDoesNotExist
 
 
 class ModelObjectManager(object):
@@ -206,7 +205,8 @@ class ModelObjectManager(object):
         Return object by given `id`.
 
         :type pk: str
-        :raises ObjectDoesNotExist: If object doesn't exist from given `pk`.
+        :raises exceptions.ObjectDoesNotExist: If object doesn't exist
+            from given `pk`.
         """
         raw_data = self.get_raw_data()
         model = self.get_model()
@@ -214,7 +214,7 @@ class ModelObjectManager(object):
         model_raw_data = raw_data[model_name]
 
         if pk not in model_raw_data:
-            raise ObjectDoesNotExist()
+            raise exceptions.ObjectDoesNotExist()
 
         obj = model_raw_data[pk]
         obj['id'] = pk
