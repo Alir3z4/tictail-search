@@ -155,8 +155,8 @@ class ModelObjectManager(object):
             if not fn.endswith('__'):
                 filters['{0}__exact'.format(fn)] = filters.pop(fn)
 
-        for id, data in model_data.items():
-            data['id'] = id
+        for pk, data in model_data.items():
+            data['id'] = pk
             row_matches = True
 
             for k, v in filters.items():
@@ -189,8 +189,8 @@ class ModelObjectManager(object):
         model = self.get_model()
 
         data_list = []
-        for k, v in raw_data[self.get_model_name()].items():
-            v['id'] = k
+        for pk, v in raw_data[self.get_model_name()].items():
+            v['id'] = pk
             data_list.append(model.__class__(**v))
 
         if sort_by and sort_by[0] not in data_list[0].get_model_fields():
@@ -201,23 +201,23 @@ class ModelObjectManager(object):
 
         return data_list
 
-    def get(self, id):
+    def get(self, pk):
         """
         Return object by given `id`.
 
-        :type id: str
-        :raises ObjectDoesNotExist: If object doesn't exist from given `id`.
+        :type pk: str
+        :raises ObjectDoesNotExist: If object doesn't exist from given `pk`.
         """
         raw_data = self.get_raw_data()
         model = self.get_model()
         model_name = self.get_model_name()
         model_raw_data = raw_data[model_name]
 
-        if id not in model_raw_data:
+        if pk not in model_raw_data:
             raise ObjectDoesNotExist()
 
-        obj = model_raw_data[id]
-        obj['id'] = id
+        obj = model_raw_data[pk]
+        obj['id'] = pk
 
         return model.__class__(**obj)
 
@@ -236,8 +236,8 @@ class Model(object):
             if k.endswith('_id'):
                 re_model_name = k.replace('_id', '')
                 rel_model_class = getattr(sys.modules[__name__],
-                                '{0}s'.format(re_model_name.capitalize()))
-                setattr(self, re_model_name, rel_model_class.objects.get(id=v))
+                                          '{0}s'.format(re_model_name.capitalize()))
+                setattr(self, re_model_name, rel_model_class.objects.get(pk=v))
 
     def get_model_fields(self):
         """
