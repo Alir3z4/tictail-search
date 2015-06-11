@@ -84,6 +84,9 @@ class TestModelObjectManager(TestCase):
         manager = ModelObjectManager(Tags)
         tags = manager.all(('tag', ModelObjectManager.SORT_BY_DESCENDING))
 
+        with self.assertRaises(exceptions.InvalidSortKey):
+            manager.all(('tagz', ModelObjectManager.SORT_BY_DESCENDING))
+
         self.assertIsNotNone(tags)
         self.assertIsInstance(tags, list)
 
