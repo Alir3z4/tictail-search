@@ -279,6 +279,12 @@ class Model(object):
         return dictator
 
     def __getitem__(self, item):
+        """
+        :type item: str
+        :raises exceptions.FieldDoesNotExist: When given field doesn't exist
+            on the model.
+        :rtype str
+        """
         if item in self.get_model_fields():
             return getattr(self, item)
 
