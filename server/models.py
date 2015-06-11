@@ -223,6 +223,20 @@ class ModelObjectManager(object):
 
 
 class Model(object):
+    """
+    Model
+
+    Keeping the data that being hold in ``ModelObjectManager.raw_data``
+    as models.
+
+    ``Model`` can access the data in ``ModelObjectManager.raw_data`` through
+    ``Model.object`` attribute.
+
+    On the initializer of ``Model`` attributes will be set and can be
+    treated as model fields. ``fields`` that that are ending with ``_id``
+    are considered as relational keys and the related model would be set
+    on th model.
+    """
     objects = None
     fields = []
 
