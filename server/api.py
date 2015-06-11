@@ -56,7 +56,7 @@ def search():
             key='.'.join([i for i in tags]),
             new_value=Tags().objects.filter({'tag__in': tags})
         )
-        tag_ids = [i.id for i in tags]
+        tag_ids = [i.id for i in tags] if tags else []
         if tag_ids:
             taggings = get_cash(
                 key=''.join(tag_ids),
