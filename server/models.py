@@ -36,7 +36,6 @@ class ModelObjectManager(object):
         Each set of data is kept with their unique ``id``.
     * ``SORT_BY_ASCENDING`` Define ascending.
     * ``SORT_BY_DESCENDING`` Define defending.
-
     """
     model = None
     allowed_lookups = None
@@ -129,6 +128,9 @@ class ModelObjectManager(object):
         """
         :type filters: dict
         :type sort_by: tuple of str
+        :raises exceptions.FieldDoesNotExist: If lookup field doesn't exist.
+        :raises exceptions.InvalidSortKey: If the sort key is not valid.
+        :raises exceptions.LookupIsNotAllowed: If lookup type is invalid.
         :rtype: list of Model
         """
         data_list = []
@@ -180,6 +182,7 @@ class ModelObjectManager(object):
     def all(self, sort_by=None):
         """
         :type sort_by: tuple of str
+        :raises exceptions.InvalidSortKey: If the sort key is not valid.
         :rtype: list of Model
         """
         raw_data = self.get_raw_data()
